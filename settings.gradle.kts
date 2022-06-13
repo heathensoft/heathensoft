@@ -1,4 +1,4 @@
 
 rootProject.name = "heathensoft"
 
-include("astar","ecs","io","lwjgl","math","storage","utility")
+include("common","astar","ecs","io","lwjgl","math","storage","utility")

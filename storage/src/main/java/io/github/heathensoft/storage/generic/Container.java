@@ -1,7 +1,8 @@
 package io.github.heathensoft.storage.generic;
 
 
-import io.github.heathensoft.utility.Disposable;
+
+import io.github.heathensoft.common.Disposable;
 
 import java.util.EmptyStackException;
 

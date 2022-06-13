@@ -1,6 +1,7 @@
 package io.github.heathensoft.astar;
 
-import io.github.heathensoft.utility.Disposable;
+
+import io.github.heathensoft.common.Disposable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;

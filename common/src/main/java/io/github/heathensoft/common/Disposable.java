@@ -1,4 +1,4 @@
-package io.github.heathensoft.utility;
+package io.github.heathensoft.common;
 
 /**
  * @author Frederik Dahl

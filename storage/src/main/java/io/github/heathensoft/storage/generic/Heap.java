@@ -1,7 +1,7 @@
 package io.github.heathensoft.storage.generic;
 
 
-import io.github.heathensoft.utility.Disposable;
+import io.github.heathensoft.common.Disposable;
 
 /**
  * Heap with 0[1] look up (Indexed nodes). O(log n) as usual for the rest.

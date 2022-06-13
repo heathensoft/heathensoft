@@ -5,5 +5,5 @@ plugins {
 
 
 dependencies {
-    api(project(":utility"))
+    api(project(":common"))
 }
