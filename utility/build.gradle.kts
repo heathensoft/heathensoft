@@ -1,4 +1,4 @@
 
 plugins {
-    `java-library`
+    id("io.github.heathensoft.project-library")
 }

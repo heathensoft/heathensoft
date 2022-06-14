@@ -1,7 +1,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
-    `java-library`
+    id("io.github.heathensoft.project-library")
 }
 
 val lwjglVersion = "3.3.1"

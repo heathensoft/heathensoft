@@ -1,17 +1,18 @@
 plugins {
-    `java-library`
-}
-
-val jomlPrimitivesVersion = "1.10.0"
-val jomlVersion = "1.10.4"
-
-
-repositories {
-    mavenCentral()
+    id("io.github.heathensoft.project-library")
 }
 
 dependencies {
+    api(files("external/joml-1.10.4.jar"))
+    api(files("external/joml-primitives-1.10.0.jar"))
+}
 
-    api("org.joml", "joml", jomlVersion)
-    api("org.joml", "joml-primitives", jomlPrimitivesVersion);
+tasks.jar {
+    //manifest.attributes["Main-Class"] = "com.example.MyMainClass"
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree) // OR .map { zipTree(it) }
+    from(dependencies)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
