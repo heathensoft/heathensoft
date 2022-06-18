@@ -34,12 +34,12 @@ repositories {
 
 dependencies {
 
-    implementation(project(":common"))
-    api(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
-    api("org.lwjgl", "lwjgl")
-    api("org.lwjgl", "lwjgl-glfw")
-    api("org.lwjgl", "lwjgl-opengl")
-    api("org.lwjgl", "lwjgl-stb")
+    implementation(project(":storage"))
+    implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
+    implementation("org.lwjgl", "lwjgl")
+    implementation("org.lwjgl", "lwjgl-glfw")
+    implementation("org.lwjgl", "lwjgl-opengl")
+    implementation("org.lwjgl", "lwjgl-stb")
     runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
     runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)

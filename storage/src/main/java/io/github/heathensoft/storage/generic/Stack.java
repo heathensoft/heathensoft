@@ -37,6 +37,10 @@ public class Stack<E> implements Disposable, Readable<E>  {
         return item;
     }
     
+    public E peak() {
+        return items[p - 1];
+    }
+    
     @Override
     public void collect(Reader<E> collector) {
         while (p > 0) collector.next(pop());

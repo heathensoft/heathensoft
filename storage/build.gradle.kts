@@ -21,13 +21,17 @@ dependencies {
     api(project(":common"))
 }
 
-tasks.jar {
+
+tasks.create("fatJar", Jar::class) {
+    //group = "my tasks" // OR, for example, "build"
+    //description = "Creates a self-contained fat JAR of the application that can be run."
     //manifest.attributes["Main-Class"] = "com.example.MyMainClass"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     val dependencies = configurations
         .runtimeClasspath
         .get()
-        .map(::zipTree) // OR .map { zipTree(it) }
+        .map(::zipTree)
     from(dependencies)
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    with(tasks.jar.get())
 }
 

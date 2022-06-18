@@ -1,9 +1,9 @@
 package io.github.heathensoft.astar;
 
+import io.github.heathensoft.common.Utils;
 import io.github.heathensoft.storage.generic.Heap;
 import io.github.heathensoft.storage.primitive.IntStack;
 import io.github.heathensoft.utility.GridPoint;
-import io.github.heathensoft.utility.Utils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +41,7 @@ class Search implements Runnable {
             currentNode = open.pop();
             closed.add(currentNode);
             if (currentNode.equals(targetNode)) {
-                boolean collapse = request.collapsePath();;
+                boolean collapse = request.collapsePath();
                 IntStack path = currentNode.retracePath(collapse);
                 request.resolve(path.array());
                 return;

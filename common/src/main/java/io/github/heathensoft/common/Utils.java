@@ -8,6 +8,7 @@ package io.github.heathensoft.common;
 
 public class Utils {
     
+    
     private static final int[] logTable;
     
     static {
@@ -16,12 +17,6 @@ public class Utils {
         for (int i=2; i<256; i++) logTable[i] = 1 + logTable[i/2];
         logTable[0] = -1;
     }
-    
-    public static final int[][] adjacent = {
-            {-1,-1},{-1, 0},{-1, 1},
-            { 0,-1}        ,{ 0, 1},
-            { 1,-1},{ 1, 0},{ 1, 1}
-    };
     
     public static int nextPowerOfTwo(int value) {
         if (value-- == 0) return 1;
@@ -43,4 +38,11 @@ public class Utils {
             else return (x >> 8 != 0) ? logTable[t] - 141 : logTable[x] - 149;
         }
     }
+    
+    public static final int[][] adjacent = {
+            {-1,-1},{-1, 0},{-1, 1},
+            { 0,-1}        ,{ 0, 1},
+            { 1,-1},{ 1, 0},{ 1, 1}
+    };
+    
 }
