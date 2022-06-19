@@ -15,7 +15,7 @@ class VideoMode {
     private final int blueBits;
     private final int refreshRate;
     
-    public VideoMode(int width, int height, int redBits, int greenBits, int blueBits, int refreshRate) {
+    VideoMode(int width, int height, int redBits, int greenBits, int blueBits, int refreshRate) {
         this.width = width;
         this.height = height;
         this.redBits = redBits;

@@ -16,8 +16,9 @@ public interface Application {
     void onStart() throws Exception;
     
     /**
-     * The input method is used for collecting and querying input from user.
+     * The input method is used for querying input from user.
      * Called right before update(). Will not update if window is minimized.
+     * Mouse and Keyboard listeners are called immediately prior to this.
      * @param delta = 1 / UPS (updates per second). It is a fixed interval.
      *              Set in the Engine. This is useful for stability. Not to be confused
      *              with the render delta.
@@ -50,6 +51,13 @@ public interface Application {
      */
     void render(float alpha, float delta);
     
+    /**
+     * Called if the window size is changed.
+     * It is not called when the viewport is set explicitly.
+     * As an explicitly set viewport is reset for the next frame.
+     * @param width width of the viewport
+     * @param height height of the viewport
+     */
     void onResize(int width, int height);
     
     /**
@@ -58,7 +66,7 @@ public interface Application {
      * before the window is terminated by the main-thread.
      * Use this to stop threads and explicitly free up memory
      */
-    void onExit();
+    void onExit() throws Exception;
     
     
 }

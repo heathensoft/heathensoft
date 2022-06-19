@@ -15,6 +15,11 @@ public class MouseHoverCallback extends GLFWCursorPosCallback {
     
     private double x, y;
     
+    public MouseHoverCallback(double x, double y, double w, double h) {
+        this.x = Math.min(Math.max(0,x),w);
+        this.y = Math.min(Math.max(0,y),h);
+    }
+    
     @Override
     public void invoke(long window, double x, double y) {
         this.x = x;

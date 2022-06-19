@@ -9,7 +9,7 @@ import io.github.heathensoft.storage.generic.Queue;
  */
 
 
-public class WinRequestQueue {
+class WinRequestQueue {
     
     private final Queue<WinRequest> requests;
     private final long glfwThread;
@@ -19,7 +19,7 @@ public class WinRequestQueue {
         this.requests = new Queue<>(16);
     }
     
-    protected synchronized void handle() {
+    synchronized void handle() {
         long current = Thread.currentThread().getId();
         if (current == glfwThread) {
             while (!requests.isEmpty()) {
@@ -29,7 +29,7 @@ public class WinRequestQueue {
         }
     }
     
-    protected synchronized void newRequest(WinRequest request) {
+    synchronized void newRequest(WinRequest request) {
         if (request != null) {
             long current = Thread.currentThread().getId();
             if (current == glfwThread)

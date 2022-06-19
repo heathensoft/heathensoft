@@ -1,4 +1,8 @@
 
-* Storage:
+* storage.primitive:
 
     make underlying primitive arrays available in queues and stacks
+
+* core.window:
+
+    mouse listener scroll value currently is int. For my mouse this is fine. But for a more sensitive mouse?

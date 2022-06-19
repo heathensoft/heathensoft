@@ -53,7 +53,7 @@ public class Engine {
                     while (accumulator >= delta) {
                         if (!window.isMinimized()) {
                             keyboard().collect();
-                            // mouse collect
+                            mouse().collect(delta);
                             app.input(delta);
                         } app.update(delta);
                         time.incUpsCount();
@@ -82,12 +82,16 @@ public class Engine {
                         exit();
                     }
                 }
-                Print.out("exiting application...");
-                application().onExit();
-                Print.out("clearing GL Capabilities");
-                window.clearCapabilities();
-                Print.out("freeing glfw callbacks");
-                window.freeCallbacks();
+                try { Print.out("exiting application...");
+                    application().onExit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    Print.out("clearing GL Capabilities");
+                    window.clearCapabilities();
+                    Print.out("freeing glfw callbacks");
+                    window.freeCallbacks();
+                }
             }
         },"GL_Context");
     }

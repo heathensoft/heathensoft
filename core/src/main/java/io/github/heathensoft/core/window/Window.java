@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
@@ -117,35 +118,45 @@ public class Window implements VirtualWindow {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
-            glfwGetWindowSize(window,w,h);
-            windowResizeCallback = new WindowResizeCallback(w.get(0),h.get(0));
-            Print.out("window size: " + w.get(0) + ":" + h.get(0));
+    
             glfwGetFramebufferSize(window,w,h);
             viewport = new Viewport(w.get(0),h.get(0));
             Print.out("framebuffer size: " + w.get(0) + ":" + h.get(0));
+            
+            glfwGetWindowSize(window,w,h);
+            windowResizeCallback = new WindowResizeCallback(w.get(0),h.get(0));
+            Print.out("window size: " + w.get(0) + ":" + h.get(0));
+            
+            DoubleBuffer mX = stack.mallocDouble(1);
+            DoubleBuffer mY = stack.mallocDouble(1);
+            glfwGetCursorPos(window,mX,mY);
+            mouseHoverCallback = new MouseHoverCallback(mX.get(0),mY.get(0),w.get(0),h.get(0));
         }
-        
         requestQueue = new WinRequestQueue(Engine.get().mainThreadID());
         charPressCallback = new CharPressCallback();
         keyPressCallback = new KeyPressCallback();
         frameBufferCallback = new FrameBufferCallback();
         mouseEnterCallback = new MouseEnterCallback();
-        mouseHoverCallback = new MouseHoverCallback();
         mousePressCallback = new MousePressCallback();
         mouseScrollCallback = new MouseScrollCallback();
         windowIconifyCallback = new WindowIconifyCallback();
         windowPositionCallback = new WindowPositionCallback();
         glfwSetCharCallback(window,charPressCallback);
         glfwSetKeyCallback(window,keyPressCallback);
+        glfwSetWindowSizeCallback(window,windowResizeCallback);
         glfwSetFramebufferSizeCallback(window,frameBufferCallback);
-        //
-        // Mouse
-        //
+        glfwSetMouseButtonCallback(window,mousePressCallback);
+        glfwSetCursorPosCallback(window,mouseHoverCallback);
+        glfwSetCursorEnterCallback(window,mouseEnterCallback);
+        glfwSetScrollCallback(window,mouseScrollCallback);
         glfwSetWindowIconifyCallback(window,windowIconifyCallback);
         glfwSetWindowPosCallback(window,windowPositionCallback);
         keyboard = new Keyboard(keyPressCallback,charPressCallback);
-        mouse = new Mouse(); // ------------------------------------
-        
+        mouse = new Mouse(this,
+                mouseEnterCallback,
+                mouseHoverCallback,
+                mousePressCallback,
+                mouseScrollCallback);
         if (windowedMode) centerWindow();
         glfwShowWindow(window);
     }
@@ -343,12 +354,12 @@ public class Window implements VirtualWindow {
     
     @Override
     public int windowWidth() {
-        return windowResizeCallback.height();
+        return windowResizeCallback.width();
     }
     
     @Override
     public int windowHeight() {
-        return windowResizeCallback.width();
+        return windowResizeCallback.height();
     }
     
     @Override

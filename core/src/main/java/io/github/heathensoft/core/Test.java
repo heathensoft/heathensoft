@@ -2,6 +2,7 @@ package io.github.heathensoft.core;
 
 import io.github.heathensoft.core.window.WinConfig;
 import io.github.heathensoft.core.window.processors.Keyboard;
+import io.github.heathensoft.core.window.processors.MouseListener;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.opengl.GL11.*;
@@ -12,11 +13,11 @@ import static org.lwjgl.opengl.GL11.*;
  */
 
 
-public class Test implements Application {
+public class Test implements Application, MouseListener {
     
     @Override
     public void onStart() throws Exception {
-    
+        Engine.get().mouse().setListener(this);
     }
     
     @Override
@@ -41,7 +42,7 @@ public class Test implements Application {
     
     @Override
     public void onResize(int width, int height) {
-        System.out.println("App resize: " + width + " " + height);
+    
     }
     
     @Override
@@ -60,5 +61,35 @@ public class Test implements Application {
             
             
         });
+    }
+    
+    @Override
+    public void hover(float viewportX, float viewportY, float deltaX, float deltaY, float ndcX, float ndcY) {
+    
+    }
+    
+    @Override
+    public void click(int button, float viewportX, float viewportY, float ndcX, float ndcY) {
+    
+    }
+    
+    @Override
+    public void scroll(int value, float viewportX, float viewportY, float ndcX, float ndcY) {
+    
+    }
+    
+    @Override
+    public void dragging(int button, float dragVectorX, float dragVectorY, float deltaX, float deltaY) {
+    
+    }
+    
+    @Override
+    public void dragStart(int button, float viewportX, float viewportY, float ndcX, float ndcY) {
+    
+    }
+    
+    @Override
+    public void dragRelease(int button, float viewportX, float viewportY, float ndcX, float ndcY) {
+    
     }
 }

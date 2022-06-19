@@ -45,4 +45,11 @@ public class Utils {
             { 1,-1},{ 1, 0},{ 1, 1}
     };
     
+    public static boolean equals(double a, double b, double delta) {
+        return Double.doubleToLongBits(a) == Double.doubleToLongBits(b) || Math.abs(a - b) <= delta;
+    }
+    
+    public static boolean equals(float a, float b, float delta) {
+        return Float.floatToIntBits(a) == Float.floatToIntBits(b) || Math.abs(a - b) <= delta;
+    }
 }

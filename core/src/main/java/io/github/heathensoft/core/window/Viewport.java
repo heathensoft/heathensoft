@@ -51,8 +51,8 @@ public class Viewport {
         glViewportArea.y = Math.round(((float) height / 2f) - ((float)ah / 2f));
         glViewportArea.w = aw;
         glViewportArea.h = ah;
-        heightINV = (float) 1 / ah;
-        widthINV =  (float) 1 / aw;
+        heightINV = 1f / ah;
+        widthINV =  1f / aw;
         modified = true;
     }
     
@@ -98,6 +98,10 @@ public class Viewport {
     
     public float heightINV() {
         return heightINV;
+    }
+    
+    public float aspectRatio() {
+        return aspectRatio;
     }
     
     private final static class ViewPortArea {
@@ -147,4 +151,5 @@ public class Viewport {
                            '}';
         }
     }
+    
 }

@@ -10,7 +10,7 @@ import io.github.heathensoft.core.window.processors.Mouse;
  */
 
 
-interface VirtualWindow {
+public interface VirtualWindow {
     
     /**
      * OPENGL THREAD
