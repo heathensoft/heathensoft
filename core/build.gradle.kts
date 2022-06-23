@@ -4,8 +4,9 @@ plugins {
     id("io.github.heathensoft.project-library")
 }
 
-val lwjglVersion = "3.3.1"
+val lwjglVersion = libs.versions.lwjgl
 
+/*
 val lwjglNatives = Pair(
     System.getProperty("os.name")!!,
     System.getProperty("os.arch")!!
@@ -26,6 +27,7 @@ val lwjglNatives = Pair(
         else -> throw Error("Unrecognized or unsupported platform. Please set \"lwjglNatives\" manually")
     }
 }
+ */
 
 
 repositories {
@@ -33,16 +35,12 @@ repositories {
 }
 
 dependencies {
-
     implementation(project(":storage"))
-    implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
-    implementation("org.lwjgl", "lwjgl")
-    implementation("org.lwjgl", "lwjgl-glfw")
-    implementation("org.lwjgl", "lwjgl-opengl")
-    implementation("org.lwjgl", "lwjgl-stb")
-    runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
-    runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
-
+    implementation(libs.lwjgl.lwjgl)
+    implementation(libs.lwjgl.glfw)
+    implementation(libs.lwjgl.opengl)
+    //runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives)
+    //runtimeOnly("org.lwjgl", "lwjgl-glfw", classifier = lwjglNatives)
+    //runtimeOnly("org.lwjgl", "lwjgl-opengl", classifier = lwjglNatives)
+    //runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
 }

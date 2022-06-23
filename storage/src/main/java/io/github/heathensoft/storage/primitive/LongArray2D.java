@@ -597,4 +597,8 @@ public class LongArray2D extends PrimitiveArray2D implements ReadableLong2D {
     public long get(int x, int y) {
         return grid[y][x];
     }
+    
+    public long[][] get() {
+        return grid;
+    }
 }

@@ -597,4 +597,8 @@ public class IntArray2D extends PrimitiveArray2D implements ReadableInt2D {
     public int get(int x, int y) {
         return grid[y][x];
     }
+    
+    public int[][] get() {
+        return grid;
+    }
 }

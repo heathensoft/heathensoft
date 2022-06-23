@@ -3,6 +3,7 @@ rootProject.name = "heathensoft"
 
 include(
     "core",
+    "graphics",
     "common",
     "astar",
     "ecs",

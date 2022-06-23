@@ -597,4 +597,8 @@ public class ByteArray2D extends PrimitiveArray2D implements ReadableByte2D {
     public byte get(int x, int y) {
         return grid[y][x];
     }
+    
+    public byte[][] get() {
+        return grid;
+    }
 }

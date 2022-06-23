@@ -597,4 +597,8 @@ public class CharArray2D extends PrimitiveArray2D implements ReadableChar2D {
     public char get(int x, int y) {
         return grid[y][x];
     }
+    
+    public char[][] get() {
+        return grid;
+    }
 }

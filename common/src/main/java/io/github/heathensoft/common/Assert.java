@@ -38,5 +38,19 @@ public class Assert {
         }
     }
     
+    public static void isFalse(boolean condition) {
+        if (condition) {
+            Print.out(DEFAULT_MESSAGE);
+            throw new RuntimeException();
+        }
+    }
+    
+    public static void isTrue(boolean condition) {
+        if (!condition) {
+            Print.out(DEFAULT_MESSAGE);
+            throw new RuntimeException();
+        }
+    }
+    
     
 }

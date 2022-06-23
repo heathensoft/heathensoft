@@ -597,4 +597,8 @@ public class FloatArray2D extends PrimitiveArray2D implements ReadableFloat2D {
     public float get(int x, int y) {
         return grid[y][x];
     }
+    
+    public float[][] get() {
+        return grid;
+    }
 }

@@ -597,4 +597,8 @@ public class DoubleArray2D extends PrimitiveArray2D implements ReadableDouble2D 
     public double get(int x, int y) {
         return grid[y][x];
     }
+    
+    public double[][] get() {
+        return grid;
+    }
 }

@@ -598,4 +598,7 @@ public class ShortArray2D extends PrimitiveArray2D implements ReadableShort2D {
         return grid[y][x];
     }
     
+    public short[][] get() {
+        return grid;
+    }
 }
