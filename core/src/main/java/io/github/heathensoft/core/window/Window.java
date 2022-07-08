@@ -33,7 +33,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window implements VirtualWindow {
     
     private String title;
-    private final Viewport viewport;
+    private final CoreViewport viewport;
     private final Keyboard keyboard;
     private final Mouse mouse;
     private final WinRequestQueue requestQueue;
@@ -75,7 +75,7 @@ public class Window implements VirtualWindow {
         targetResHeight = winConfig.targetResolutionHeight();
         
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_CLIENT_API,GLFW_OPENGL_API);
+        //glfwWindowHint(GLFW_CLIENT_API,GLFW_OPENGL_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_SAMPLES,antialiasing  ? 4 : 0);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -120,7 +120,7 @@ public class Window implements VirtualWindow {
             IntBuffer h = stack.mallocInt(1);
     
             glfwGetFramebufferSize(window,w,h);
-            viewport = new Viewport(w.get(0),h.get(0));
+            viewport = new CoreViewport(w.get(0),h.get(0));
             Print.out("framebuffer size: " + w.get(0) + ":" + h.get(0));
             
             glfwGetWindowSize(window,w,h);
@@ -373,7 +373,7 @@ public class Window implements VirtualWindow {
     }
     
     @Override
-    public Viewport viewport() {
+    public CoreViewport viewport() {
         return viewport;
     }
     

@@ -1,31 +1,37 @@
-package io.github.heathensoft.utility;
+package io.github.heathensoft.tilemap.terrain;
 
 
 import io.github.heathensoft.common.Utils;
+import io.github.heathensoft.tilemap.MapSize;
+import org.joml.primitives.Rectanglef;
 
 /**
  * Quadtree for orthographic view culling. No LOD.
- * Query returns the center-point of leaf-nodes in view.
+ * Query returns the coordinate and center-point of leaf-nodes in view.
  *
  * @author Frederik Dahl
  * 13/05/2022
  */
 
 
-public class QuadTree {
+public class TerrainQuadTree {
  
-    private final static Itr ITR = (cX, cY, s) -> {};
-    private Itr itr = ITR;
+    private final static QTItr QT_ITR = (x, y, cX, cY, s) -> {};
+    private QTItr itr = QT_ITR;
     private final int size;
     private final int lim;
     private float x0 = 0;
     private float y0 = 0;
     
+    public TerrainQuadTree(MapSize mapSize) {
+        this(mapSize.log2, Utils.log2(32));
+    }
+    
     /**
      * @param pow2_tree scale of the quadTree, in power of two
      * @param pow2_leaf size of leaf, in power of two
      */
-    public QuadTree(int pow2_tree, int pow2_leaf) {
+    public TerrainQuadTree(int pow2_tree, int pow2_leaf) {
         pow2_tree = Math.max(1,pow2_tree);
         pow2_leaf = Math.min(pow2_tree,pow2_leaf);
         int base = (int) Math.pow(2,pow2_leaf);
@@ -41,8 +47,8 @@ public class QuadTree {
      * The iterator will be called on queries
      * @param itr TerrainQT.Itr (iterator)
      */
-    public void setIterator(Itr itr) {
-        this.itr = itr == null ? ITR : itr;
+    public void setIterator(QTItr itr) {
+        this.itr = itr == null ? QT_ITR : itr;
     }
     
     /**
@@ -61,6 +67,10 @@ public class QuadTree {
         query(x0,y0,size,minX,minY,maxX,maxY,0);
     }
     
+    public void query(Rectanglef rect) {
+        query(x0,y0,size,rect.minX,rect.minY,rect.maxX,rect.maxY,0);
+    }
+    
     private void query(float x0, float y0, float s, float cMinx, float cMinY, float cMaxX, float cMaxY, float d) {
         float nMaxX = x0 + s; float nMaxY = y0 + s;
         if (x0 < cMaxX && nMaxX > cMinx && nMaxY > cMinY && y0 < cMaxY) {
@@ -70,16 +80,18 @@ public class QuadTree {
                 query(cX,y0,sH,cMinx,cMinY,cMaxX,cMaxY,d);
                 query(x0,cY,sH,cMinx,cMinY,cMaxX,cMaxY,d);
                 query(cX,cY,sH,cMinx,cMinY,cMaxX,cMaxY,d);
-                return; } itr.pass(cX,cY,s);
+                return; } itr.pass((int)(x0/s),(int)(y0/s),cX,cY,s);
         }
     }
     
-    public interface Itr {
+    public interface QTItr {
         /**
+         * @param x leaf x coord
+         * @param y leaf y coord
          * @param cX leaf center x
          * @param cY leaf center y
-         * @param s leaf dimensions
+         * @param s leaf size
          */
-        void pass(float cX, float cY, float s);
+        void pass(int x, int y, float cX, float cY, float s);
     }
 }

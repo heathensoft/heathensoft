@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 
 
-public class Viewport {
+public class CoreViewport {
     
     private final ViewPortArea transientArea;
     private final ViewPortArea glViewportArea;
@@ -24,7 +24,7 @@ public class Viewport {
     private boolean modified;
     
     
-    protected Viewport(int targetResWidth, int targetResHeight) {
+    protected CoreViewport(int targetResWidth, int targetResHeight) {
         this.aspectRatio = (float) targetResWidth / targetResHeight;
         this.glViewportArea = new ViewPortArea(0,0,targetResWidth,targetResHeight);
         fit(targetResWidth,targetResHeight);
@@ -65,7 +65,7 @@ public class Viewport {
         }
     }
     
-    private void reset() {
+    public void reset() {
         if (!glViewportArea.equals(transientArea)) {
             transientArea.set(glViewportArea);
             transientArea.glViewport();
@@ -102,6 +102,10 @@ public class Viewport {
     
     public float aspectRatio() {
         return aspectRatio;
+    }
+    
+    public void printViewport() {
+        System.out.println(transientArea);
     }
     
     private final static class ViewPortArea {

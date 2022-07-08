@@ -37,7 +37,7 @@ public interface Application {
     /**
      * The rendering is happening separately from than that of
      * the input and update methods. (Look up "fixed time intervals")
-     * Will not update if window is minimized.
+     * Will not render if window is minimized.
      * @param alpha alpha = accumulator / delta, where the accumulator
      *              is a value from 0 to delta. Think of alpha as how far
      *              you are into another update. This can be used to project

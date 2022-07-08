@@ -3,6 +3,7 @@ package io.github.heathensoft.graphics;
 import io.github.heathensoft.common.Disposable;
 import io.github.heathensoft.common.Print;
 import org.joml.*;
+import org.lwjgl.opengl.GL20C;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.FloatBuffer;
@@ -24,14 +25,23 @@ import static org.lwjgl.opengl.GL31.glUniformBlockBinding;
 
 public class ShaderProgram implements Disposable {
     
-    private final int programHandle;
+    private final int programID;
+    private static int currentID = GL_NONE;
     private final Map<String,Integer> uniforms;
     private final Map<String,Integer> blockIndices;
     
     
+    public ShaderProgram(String vsSource, String fsSource) throws Exception {
+        this();
+        attach(vsSource, GL20C.GL_VERTEX_SHADER);
+        attach(fsSource, GL20C.GL_FRAGMENT_SHADER);
+        compile();
+        link();
+    }
+    
     public ShaderProgram() throws Exception {
-        programHandle = glCreateProgram();
-        if (programHandle == GL_FALSE)
+        programID = glCreateProgram();
+        if (programID == GL_FALSE)
             throw new Exception("Could not create program");
         uniforms = new HashMap<>();
         blockIndices = new HashMap<>();
@@ -40,13 +50,13 @@ public class ShaderProgram implements Disposable {
     public void attach(String source, int type) throws Exception {
         int handle = glCreateShader(type);
         glShaderSource(handle,source);
-        glAttachShader(programHandle, handle);
+        glAttachShader(programID, handle);
     }
     
     public void compile() throws Exception {
         final int[] count = {0};
         final int[] shaders = new int[16];
-        glGetAttachedShaders(programHandle,count,shaders);
+        glGetAttachedShaders(programID,count,shaders);
         try {
             for (int i = 0; i < count[0]; i++) {
                 final int shader = shaders[i];
@@ -63,39 +73,39 @@ public class ShaderProgram implements Disposable {
     }
     
     public void link() throws Exception {
-        int status = glGetProgrami(programHandle, GL_LINK_STATUS);
-        int attachedCount = glGetProgrami(programHandle,GL_ATTACHED_SHADERS);
+        int status = glGetProgrami(programID, GL_LINK_STATUS);
+        int attachedCount = glGetProgrami(programID,GL_ATTACHED_SHADERS);
         if (status == GL_TRUE || attachedCount == 0) {
             Print.out("Program already linked OR no shaders attached");
             return;
-        } try { glLinkProgram(programHandle);
-            status = glGetProgrami(programHandle, GL_LINK_STATUS);
+        } try { glLinkProgram(programID);
+            status = glGetProgrami(programID, GL_LINK_STATUS);
             if (status == GL_FALSE)
                 throw new Exception("Failed to link shaders: \n"
-                + glGetProgramInfoLog(programHandle));
+                + glGetProgramInfoLog(programID));
         } catch (Exception e) {
             dispose();
             throw new Exception(e.getMessage());
         } disposeShaders();
-        glValidateProgram(programHandle);
-        if (glGetProgrami(programHandle, GL_VALIDATE_STATUS) == 0) {
-            System.err.println(glGetProgramInfoLog(programHandle,512));
+        glValidateProgram(programID);
+        if (glGetProgrami(programID, GL_VALIDATE_STATUS) == 0) {
+            System.err.println(glGetProgramInfoLog(programID,512));
         }
     }
     
     private void disposeShaders() {
         int[] count = {0};
         int[] shaders = new int[16];
-        glGetAttachedShaders(programHandle,count,shaders);
+        glGetAttachedShaders(programID,count,shaders);
         for (int i = 0; i < count[0]; i++) {
             final int shader = shaders[i];
-            glDetachShader(programHandle,shader);
+            glDetachShader(programID,shader);
             glDeleteShader(shader);
         }
     }
     
     public void createUniformBlockIndex(String name) {
-        int index = glGetUniformBlockIndex(programHandle,name);
+        int index = glGetUniformBlockIndex(programID,name);
         if (index < 0) throw new RuntimeException("No such block:" + name);
         blockIndices.put(name,index);
     }
@@ -103,11 +113,11 @@ public class ShaderProgram implements Disposable {
     public void bindBlock(String name, int bindingPoint) {
         Integer index = blockIndices.get(name);
         if (index == null) throw new RuntimeException("No such block:" + name);
-        glUniformBlockBinding(programHandle,index,bindingPoint);
+        glUniformBlockBinding(programID,index,bindingPoint);
     }
     
     public void createUniform(String name) {
-        int uniformLocation = glGetUniformLocation(programHandle, name);
+        int uniformLocation = glGetUniformLocation(programID, name);
         if (uniformLocation < 0)
             throw new RuntimeException("No such uniform:" + name);
         uniforms.put(name, uniformLocation);
@@ -398,23 +408,26 @@ public class ShaderProgram implements Disposable {
     }
     
     public void use() {
-        glUseProgram(programHandle);
+        if (programID != currentID) {
+            glUseProgram(programID);
+            currentID = programID;
+        }
     }
     
     public int id() {
-        return programHandle;
+        return programID;
     }
     
     @Override
     public void dispose() {
-        if (glGetProgrami(programHandle,GL_ATTACHED_SHADERS) > 0)
+        if (glGetProgrami(programID,GL_ATTACHED_SHADERS) > 0)
             disposeShaders();
-        if (glGetProgrami(programHandle,GL_DELETE_STATUS) == GL_FALSE)
-            glDeleteProgram(programHandle);
+        if (glGetProgrami(programID,GL_DELETE_STATUS) == GL_FALSE)
+            glDeleteProgram(programID);
     }
     
     public static void useZERO() {
-        glUseProgram(0);
+        glUseProgram(currentID = GL_NONE);
     }
     
     public static String insert(String insert, String replace, String glslString) {

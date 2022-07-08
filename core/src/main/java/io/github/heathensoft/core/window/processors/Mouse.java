@@ -1,7 +1,7 @@
 package io.github.heathensoft.core.window.processors;
 
 import io.github.heathensoft.common.Utils;
-import io.github.heathensoft.core.window.Viewport;
+import io.github.heathensoft.core.window.CoreViewport;
 import io.github.heathensoft.core.window.Window;
 import io.github.heathensoft.core.window.callbacks.MouseEnterCallback;
 import io.github.heathensoft.core.window.callbacks.MouseHoverCallback;
@@ -37,7 +37,8 @@ public class Mouse {
     private final Position cScreen = new Position();
     private final Position pScreen = new Position();
     private final Position ndc = new Position();
-    private final Position tmp = new Position();
+    private final Position tmp1 = new Position();
+    private final Position tmp2 = new Position();
     private final Position dt = new Position();
     private final Window window;
     
@@ -56,11 +57,11 @@ public class Mouse {
         } cScreen.set(pScreen.set(
                 hoverCallback.x(),
                 window.windowHeight() - hoverCallback.y()));
-        Viewport viewport = window.viewport();
+        CoreViewport viewport = window.viewport();
         final double x = (pScreen.x - viewport.x()) * viewport.widthINV();
         final double y = (pScreen.y - viewport.y()) * viewport.heightINV();
         pViewport.set( Math.min(1,Math.max(x,0)), Math.min(1,Math.max(y,0)));
-        pViewport.y /= viewport.aspectRatio();
+        //pViewport.y /= viewport.aspectRatio();
         cViewport.set(pViewport);
         ndc.set(2 * cViewport.x - 1, 2 * cViewport.y - 1);
     }
@@ -72,18 +73,23 @@ public class Mouse {
                 window.windowHeight() - hoverCallback.y());
         cScreen.x = Math.min(window.windowWidth(),Math.max(cScreen.x,0));
         cScreen.y = Math.min(window.windowHeight(),Math.max(cScreen.y,0));
-        Viewport viewport = window.viewport();
+        CoreViewport viewport = window.viewport();
+        
+        final double x = (cScreen.x - viewport.x()) * viewport.widthINV();
+        final double y = (cScreen.y - viewport.y()) * viewport.heightINV();
+        pViewport.set(cViewport);
+        cViewport.x = Math.min(1,Math.max(x,0));
+        cViewport.y = Math.min(1,Math.max(y,0));
+        //cViewport.y /= viewport.aspectRatio(); // todo: remember
+        ndc.x = 2 * cViewport.x - 1;
+        ndc.y = 2 * cViewport.y - 1;
+        
         if (!pScreen.equals(cScreen,0.001d)) {
-            final double x = (cScreen.x - viewport.x()) * viewport.widthINV();
-            final double y = (cScreen.y - viewport.y()) * viewport.heightINV();
-            pViewport.set(cViewport);
-            cViewport.x = Math.min(1,Math.max(x,0));
-            cViewport.y = Math.min(1,Math.max(y,0));
-            cViewport.y /= viewport.aspectRatio();
-            ndc.x = 2 * cViewport.x - 1;
-            ndc.y = 2 * cViewport.y - 1;
-            tmp.set(cViewport);
-            dt.set(tmp.sub(pViewport));
+            tmp1.set(cViewport);
+            tmp1.y /= viewport.aspectRatio();
+            tmp2.set(pViewport);
+            tmp2.y /= viewport.aspectRatio();
+            dt.set(tmp1.sub(tmp2)); // todo: I think this is right now
             listener.hover(
                     (float) cViewport.x,
                     (float) cViewport.y,
@@ -92,6 +98,13 @@ public class Mouse {
                     (float) ndc.x,
                     (float) ndc.y);
         }else dt.zero();
+    
+        listener.position(
+                (float) cViewport.x,
+                (float) cViewport.y,
+                (float) ndc.x,
+                (float) ndc.y);
+        
         for (int b = 0; b < NUM_BUTTONS; b++) {
             previous[b] = current[b];
             current[b] = pressCallback.isPressed(b);
@@ -112,10 +125,10 @@ public class Mouse {
                                 (float) cViewport.y,
                                 (float) ndc.x,
                                 (float) ndc.y);
-                    } else { tmp.set(cViewport).sub(dragOrigin[b]);
+                    } else { tmp1.set(cViewport).sub(dragOrigin[b]);
                         listener.dragging(b,
-                                (float) tmp.x,
-                                (float) tmp.y,
+                                (float) tmp1.x,
+                                (float) tmp1.y,
                                 (float) dt.x,
                                 (float) dt.y);
                     }
@@ -190,9 +203,22 @@ public class Mouse {
         return 2 * cScreen.y / window.windowHeight() - 1;
     }
     
+    public MouseListener listener() {
+        return listener;
+    }
+    
     public void setListener(MouseListener listener) {
-        if (listener == null) this.listener = DEFAULT_LISTENER;
-        else this.listener = listener;
+        if (listener == null) {
+            this.listener.onDeactiveMouseListener();
+            this.listener = DEFAULT_LISTENER;
+        }
+        else {
+            if (this.listener != listener) {
+                this.listener.onDeactiveMouseListener();
+                this.listener = listener;
+                this.listener.onActiveMouseListener();
+            }
+        }
         for (int b = 0; b < NUM_BUTTONS; b++) {
             dragOrigin[b].set(cViewport);
         }
@@ -200,7 +226,13 @@ public class Mouse {
     private MouseListener listener = DEFAULT_LISTENER;
     
     private final static MouseListener DEFAULT_LISTENER = new MouseListener() {
+    
+    
+        @Override
+        public void position(float viewportX, float viewportY, float ndcX, float ndcY) {
         
+        }
+    
         @Override
         public void hover(float viewportX, float viewportY, float deltaX, float deltaY, float ndcX, float ndcY) {
         
@@ -228,6 +260,16 @@ public class Mouse {
     
         @Override
         public void dragRelease(int button, float viewportX, float viewportY, float ndcX, float ndcY) {
+        
+        }
+    
+        @Override
+        public void onActiveMouseListener() {
+        
+        }
+    
+        @Override
+        public void onDeactiveMouseListener() {
         
         }
     };

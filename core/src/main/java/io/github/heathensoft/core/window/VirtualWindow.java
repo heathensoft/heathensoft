@@ -93,7 +93,7 @@ public interface VirtualWindow {
     
     int windowPositionY();
     
-    Viewport viewport();
+    CoreViewport viewport();
     
     WinConfig config();
     

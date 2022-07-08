@@ -14,6 +14,7 @@ public class MouseScrollCallback extends GLFWScrollCallback {
     
     @Override
     public void invoke(long window, double x, double y) {
+        
         synchronized (this) { scroll += (int) y; }
     }
     

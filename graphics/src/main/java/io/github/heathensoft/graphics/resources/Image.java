@@ -1,4 +1,4 @@
-package io.github.heathensoft.graphics;
+package io.github.heathensoft.graphics.resources;
 
 import io.github.heathensoft.common.Disposable;
 import io.github.heathensoft.math.MathLib;

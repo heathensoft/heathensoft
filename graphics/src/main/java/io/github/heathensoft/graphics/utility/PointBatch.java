@@ -1,4 +1,4 @@
-package io.github.heathensoft.graphics.debug;
+package io.github.heathensoft.graphics.utility;
 
 import io.github.heathensoft.common.Disposable;
 import io.github.heathensoft.graphics.BufferObject;

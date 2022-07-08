@@ -1,6 +1,8 @@
-package io.github.heathensoft.graphics;
+package io.github.heathensoft.graphics.texture;
 
 import io.github.heathensoft.common.Assert;
+import io.github.heathensoft.common.Disposable;
+import io.github.heathensoft.graphics.resources.Image;
 import io.github.heathensoft.storage.primitive.ByteArray2D;
 import io.github.heathensoft.storage.primitive.FloatArray2D;
 import io.github.heathensoft.storage.primitive.IntArray2D;
@@ -27,15 +29,25 @@ import static org.lwjgl.opengl.GL31.*;
  */
 
 
-public class Texture2D extends Texture {
+public class Texture2D extends Texture implements ITex2D {
     
     protected int width;
     protected int height;
     
-    public Texture2D(int width, int height) {
+    public Texture2D() {
         super(GL_TEXTURE_2D);
-        this.width = width;
-        this.height = height;
+    }
+    
+    public void repeat() {
+        wrapST(GL_REPEAT);
+    }
+    
+    public void clampToEdge() {
+        wrapST(GL_CLAMP_TO_EDGE);
+    }
+    
+    public void clampToBorder() {
+        wrapST(GL_CLAMP_TO_BORDER);
     }
     
     public void image(Image image) throws Exception {
@@ -71,6 +83,7 @@ public class Texture2D extends Texture {
         } glPixelStorei(GL_UNPACK_ALIGNMENT,stride);
         glTexImage2D(target, 0, i_format, width, height,
                 0, format, GL_UNSIGNED_BYTE, image.data());
+        Disposable.dispose(image);
     }
     
     
@@ -271,7 +284,7 @@ public class Texture2D extends Texture {
     
     
     
-    public void TextureR32F(FloatArray2D data) {
+    public void R32F(FloatArray2D data) {
         Assert.notNull(data);
         this.width = data.cols();
         this.height = data.rows();
@@ -286,11 +299,11 @@ public class Texture2D extends Texture {
         MemoryUtil.memFree(buffer);
     }
     
-    public void TextureR32F(float[][] data) {
-        TextureR32F(new FloatArray2D(data));
+    public void R32F(float[][] data) {
+        R32F(new FloatArray2D(data));
     }
     
-    public void TextureR32F(float[] data, int width, int height) {
+    public void R32F(float[] data, int width, int height) {
         this.width = width;
         this.height = height;
         FloatBuffer buffer = MemoryUtil.memAllocFloat(data.length);
@@ -1144,4 +1157,5 @@ public class Texture2D extends Texture {
     public int height() {
         return height;
     }
+    
 }

@@ -1,7 +1,6 @@
 package io.github.heathensoft.graphics.resources;
 
 import io.github.heathensoft.common.FileUtils;
-import io.github.heathensoft.graphics.Image;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryUtil;
 
@@ -36,10 +35,13 @@ public class ResourceLoader {
         
         private ResourceUtility() {}
         
-        
         public ByteBuffer toBuffer(String file, int byteSize) throws IOException {
+            return toBuffer(file,byteSize,c);
+        }
+    
+        public ByteBuffer toBuffer(String file, int byteSize, Class<?> clazz) throws IOException {
             ByteBuffer result;
-            try (InputStream is = stream(file)){
+            try (InputStream is = stream(clazz,file)){
                 if (is == null) throw new IOException("Unable to read: " + file);
                 try (ReadableByteChannel bc = Channels.newChannel(is)){
                     result = BufferUtils.createByteBuffer(Math.max(128,byteSize));
@@ -86,8 +88,12 @@ public class ResourceLoader {
         }
         
         public List<String> asLines(String file, Charset charset) throws IOException {
+            return asLines(file,charset,c);
+        }
+    
+        public List<String> asLines(String file, Charset charset, Class<?> clazz) throws IOException {
             List<String> result;
-            try (InputStream is = stream(file)){
+            try (InputStream is = stream(clazz,file)){
                 if (is == null) throw new IOException("Unable to read: " + file);
                 Stream<String> stream = new BufferedReader(new InputStreamReader(is,charset)).lines();
                 result = stream.collect(Collectors.toList());
@@ -100,8 +106,12 @@ public class ResourceLoader {
         }
         
         public String toString(String file, Charset charset) throws IOException {
+            return toString(file,charset,c);
+        }
+    
+        public String toString(String file, Charset charset, Class<?> clazz) throws IOException {
             StringBuilder builder = new StringBuilder();
-            try (InputStream is = stream(file)){
+            try (InputStream is = stream(clazz,file)){
                 if (is == null) throw new IOException("Unable to read: " + file);
                 BufferedReader bf = new BufferedReader(new InputStreamReader(is,charset));
                 String line;
@@ -115,9 +125,14 @@ public class ResourceLoader {
         public String toString(String file) throws IOException {
             return toString(file,StandardCharsets.UTF_8);
         }
+    
+        public String toString(String file, Class<?> clazz) throws IOException {
+            return toString(file,StandardCharsets.UTF_8,clazz);
+        }
         
-        private InputStream stream(String file) {
-            return c.getClassLoader().getResourceAsStream(file);
+        
+        private InputStream stream(Class<?> clazz, String file) {
+            return clazz.getClassLoader().getResourceAsStream(file);
         }
     }
 }

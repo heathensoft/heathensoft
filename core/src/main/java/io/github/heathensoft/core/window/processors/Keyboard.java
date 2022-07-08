@@ -103,5 +103,9 @@ public class Keyboard {
         if (textProcessor != null)
             charPressCallback.ignore(false);
     }
+    
+    public KeyListener listener() {
+        return textProcessor;
+    }
 }
 

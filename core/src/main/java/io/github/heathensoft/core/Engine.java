@@ -38,16 +38,15 @@ public class Engine {
             try { contextThreadID = Thread.currentThread().getId();
                 Print.out("initializing window");
                 window.initialize();
-                Print.out("starting application");
                 app.onStart();
                 time.init();
                 running = true;
                 float alpha;
                 float frameTime;
                 float accumulator = 0f;
-                float delta = 1f / targetUPS;
                 Print.out("running...");
                 while (running) {
+                    float delta = 1f / targetUPS;
                     frameTime = time.frameTime();
                     accumulator += frameTime;
                     while (accumulator >= delta) {
@@ -58,19 +57,20 @@ public class Engine {
                         } app.update(delta);
                         time.incUpsCount();
                         accumulator -= delta;
-                        synchronized (lock) {
-                            if (running) { alpha = accumulator / delta;
-                                if (!window.isMinimized()) {
-                                    window.updateViewport(app);
-                                    app.render(alpha,frameTime);
-                                    window.swapBuffers();
-                                }
+                    } synchronized (lock) {
+                        if (running) { alpha = accumulator / delta;
+                            if (!window.isMinimized()) {
+                                window.updateViewport(app);
+                                app.render(alpha,frameTime);
+                                window.swapBuffers();
                             }
                         }
-                        time.incFpsCount();
-                        time.update();
-                        if (!window.vsyncEnabled()) {
-                            if (capFPS) sync();
+                    }
+                    time.incFpsCount();
+                    time.update();
+                    if (!window.vsyncEnabled()) {
+                        if (capFPS) {
+                            sync();
                         }
                     }
                 }

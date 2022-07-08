@@ -12,6 +12,7 @@ import java.nio.ShortBuffer;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL30.glBindBufferBase;
 import static org.lwjgl.opengl.GL30.glBindBufferRange;
+import static org.lwjgl.opengl.GL32.glFenceSync;
 
 /**
  * @author Frederik Dahl

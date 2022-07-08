@@ -17,6 +17,13 @@ public class Assert {
         }
     }
     
+    public static void notNull(Object o, String message) {
+        if (o == null) {
+            Print.out(DEFAULT_MESSAGE + ": " + message);
+            throw new RuntimeException();
+        }
+    }
+    
     public static void notNull(Object... o) {
         if (o == null) {
             Print.out(DEFAULT_MESSAGE);
@@ -27,6 +34,13 @@ public class Assert {
     public static void isNull(Object o) {
         if (o != null) {
             Print.out(DEFAULT_MESSAGE);
+            throw new RuntimeException();
+        }
+    }
+    
+    public static void isNull(Object o, String message) {
+        if (o != null) {
+            Print.out(DEFAULT_MESSAGE + ": " + message);
             throw new RuntimeException();
         }
     }
@@ -45,9 +59,23 @@ public class Assert {
         }
     }
     
+    public static void isFalse(boolean condition, String message) {
+        if (condition) {
+            Print.out(DEFAULT_MESSAGE + ": " + message);
+            throw new RuntimeException();
+        }
+    }
+    
     public static void isTrue(boolean condition) {
         if (!condition) {
             Print.out(DEFAULT_MESSAGE);
+            throw new RuntimeException();
+        }
+    }
+    
+    public static void isTrue(boolean condition, String message) {
+        if (!condition) {
+            Print.out(DEFAULT_MESSAGE + ": " + message);
             throw new RuntimeException();
         }
     }

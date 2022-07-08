@@ -9,6 +9,9 @@ package io.github.heathensoft.core.window.processors;
 public interface MouseListener {
     
     
+    void position(float viewportX, float viewportY, float ndcX, float ndcY);
+    
+    
     void hover(float viewportX, float viewportY, float deltaX, float deltaY, float ndcX, float ndcY);
     
     
@@ -25,5 +28,12 @@ public interface MouseListener {
     
     
     void dragRelease(int button, float viewportX, float viewportY, float ndcX, float ndcY);
+    
+    
+    void onActiveMouseListener();
+    
+    /** Called when this listener is replaced as the current MouseListener */
+    void onDeactiveMouseListener();
+    
     
 }

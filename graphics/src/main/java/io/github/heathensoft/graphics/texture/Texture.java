@@ -1,8 +1,14 @@
-package io.github.heathensoft.graphics;
+package io.github.heathensoft.graphics.texture;
 
 import io.github.heathensoft.common.Disposable;
+import org.lwjgl.opengl.GL11C;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
+import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13C.glActiveTexture;
+import static org.lwjgl.opengl.GL14.GL_TEXTURE_LOD_BIAS;
 
 /**
  * @author Frederik Dahl
@@ -103,13 +109,11 @@ The ones inlined are implemented
  */
 
 
-public class Texture implements Disposable {
+public class Texture implements Disposable, ITex {
     
-    protected static final GLGraphics.Textures textures = GLGraphics.get().texture;
-    
+    protected static int activeSlot = 0;
     protected final int id;
     protected final int target;
-    protected int slot = GLGraphics.Textures.NOT_BOUND;
     
     public Texture(int target) {
         this.id = glGenTextures();
@@ -117,32 +121,96 @@ public class Texture implements Disposable {
     }
     
     public void bind() {
-        textures.bind(this);
+        GL11C.glBindTexture(target,id);
     }
     
     public void bind(int slot) {
-        textures.bind(this,slot);
-    }
-    
-    public void unbind() {
-        textures.unbind(this);
+        if (slot != activeSlot) {
+            glActiveTexture(slot + GL_TEXTURE0);
+            activeSlot = slot;
+        } bind();
     }
     
     public int id() {
         return id;
     }
     
-    public int slot() {
-        return slot;
-    }
-    
     public int target() {
         return target;
     }
     
+    public void generateMipMap(float lodBias, float min, float max) {
+        glTexParameterf(target,GL_TEXTURE_MIN_LOD,min);
+        glTexParameterf(target,GL_TEXTURE_MAX_LOD,max);
+        glTexParameterf(target,GL_TEXTURE_LOD_BIAS,lodBias);
+    }
+    
+    public void generateMipMap(float lodBias) {
+        generateMipMap(lodBias, -1000, 1000);
+    }
+    
+    public void generateMipMap() {
+        generateMipMap(0.0f);
+    }
+    
+    public void filter(int filter) {
+        filter(filter,filter);
+    }
+    
+    public void filter(int minFilter, int magFilter) {
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter);
+    }
+    
+    public void nearest() {
+        filter(GL_NEAREST);
+    }
+    
+    public void linear() {
+        filter(GL_LINEAR);
+    }
+    
+    public void wrapS(int wrapS) {
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, wrapS);
+    }
+    
+    public void wrapT(int wrapT) {
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, wrapT);
+    }
+    
+    public void wrapR(int wrapR) {
+        glTexParameteri(target, GL_TEXTURE_WRAP_R, wrapR);
+    }
+    
+    public void wrapST(int wrapS, int wrapT) {
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, wrapS);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, wrapT);
+    }
+    
+    public void wrapSTR(int wrapS, int wrapT, int wrapR) {
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, wrapS);
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, wrapT);
+        glTexParameteri(target, GL_TEXTURE_WRAP_R, wrapR);
+    }
+    
+    public void wrapST(int wrap) {
+        wrapST(wrap,wrap);
+    }
+    
+    public void wrapSTR(int wrap) {
+        wrapSTR(wrap,wrap,wrap);
+    }
+    
     @Override
     public void dispose() {
-        unbind();
         glDeleteTextures(id);
+    }
+    
+    public static int activeSlot() {
+        return activeSlot;
+    }
+    
+    public static void unBind(int target) {
+        GL11C.glBindTexture(target,0);
     }
 }

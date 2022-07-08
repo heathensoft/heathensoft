@@ -143,6 +143,19 @@ public class Container<E> implements Disposable, Readable<E> {
         }
     }
     
+    public void read(ReaderIDX<E> reader) {
+        if (isStacked()) {
+            for (int i = 0; i < count; i++)
+                reader.next(items[i],i);
+        } else {
+            E item; for (int i = 0; i < peak; i++) {
+                item = items[i];
+                if (item == null) continue;
+                reader.next(item,i);
+            }
+        }
+    }
+    
     @Override
     public void collect(Reader<E> collector) {
         E item;

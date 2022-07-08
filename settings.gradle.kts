@@ -10,4 +10,6 @@ include(
     "io",
     "math",
     "storage",
-    "utility")
+    "utility",
+    "tilemap",
+    "test")
